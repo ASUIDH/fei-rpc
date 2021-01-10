@@ -23,9 +23,8 @@ public class WorkThread implements Runnable {
     }
     @Override
     public void run() {
-        try{
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+        try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());){
             RpcRequest rpcRequest = (RpcRequest) objectInputStream.readObject();
             Method method =service.getClass().getMethod(rpcRequest.getMethodName(),rpcRequest.getParamTypes());//methodName
             Object returnObject = method.invoke(service,rpcRequest.getParameters());

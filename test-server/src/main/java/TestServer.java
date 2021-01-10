@@ -1,11 +1,16 @@
+import registry.DefaultServiceRegistry;
+import registry.ServiceRegistry;
 import service.RpcServer;
 
 public class TestServer {
 
 
     public static void main(String[] args) {
-        RpcServer rpcServer = new RpcServer();
-        rpcServer.register(new HelloServiceImpl(), 9000);
+        HelloService service =  new HelloServiceImpl();
+        ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
+        serviceRegistry.registry(service);
+        RpcServer rpcServer = new RpcServer(serviceRegistry);
+        rpcServer.start(9000);
 
     }
 }
