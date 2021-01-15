@@ -8,8 +8,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultServiceRegistry implements ServiceRegistry {
-    Map<String,Object> serviceMap = new ConcurrentHashMap<>();
-    Set<String> registryService = ConcurrentHashMap.newKeySet();
+    private static Map<String,Object> serviceMap = new ConcurrentHashMap<>();
+    private static Set<String> registryService = ConcurrentHashMap.newKeySet();
     @Override
     public <T> void registry(T service) {
         String name = service.getClass().getName();

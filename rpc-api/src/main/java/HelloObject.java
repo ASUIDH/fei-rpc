@@ -7,4 +7,5 @@ import java.io.Serializable;
 public class HelloObject implements Serializable {
     private int id;
     private String message;
+    public HelloObject(){}
 }

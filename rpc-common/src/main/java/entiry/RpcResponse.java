@@ -10,6 +10,7 @@ public class RpcResponse<T> implements Serializable {
     private Integer statesCode;
     private String message;
     private T data;
+    public RpcResponse(){}
     public static <T> RpcResponse<T> success(T data)
     {
         RpcResponse <T> rpcResponse = new RpcResponse<>();

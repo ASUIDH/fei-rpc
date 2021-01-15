@@ -1,5 +1,6 @@
 package service;
 
+import entiry.RpcServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import registry.ServiceRegistry;
@@ -9,12 +10,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.*;
 
-public class RpcServer {
-    private static final Logger logger = LoggerFactory.getLogger(RpcServer.class);
+public class RpcSocketServer implements RpcServer {
+    private static final Logger logger = LoggerFactory.getLogger(RpcSocketServer.class);
     private final ExecutorService threadpool;
     private final ServiceRegistry serviceRegistry;
     private RequestHandler requestHandler;
-    public RpcServer(ServiceRegistry serviceRegistry)
+    public RpcSocketServer(ServiceRegistry serviceRegistry)
     {
         this.serviceRegistry = serviceRegistry;
         int corePoolSize = 3;

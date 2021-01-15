@@ -1,4 +1,5 @@
-import client.RpcClient;
+import client.RpcSocketClient;
+import entiry.RpcClient;
 import entiry.RpcRequest;
 import entiry.RpcResponse;
 
@@ -7,12 +8,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 public class RpcClientProxy implements InvocationHandler {
-    String host;
-    int port;
-    RpcClientProxy(String host,int port)
+    private final RpcClient client;
+    RpcClientProxy(RpcClient client)
     {
-        this.host = host;
-        this.port = port;
+        this.client = client;
     }
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Class<T> clazz)
@@ -21,14 +20,8 @@ public class RpcClientProxy implements InvocationHandler {
     }
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        RpcRequest rpcRequest =  RpcRequest.builder()
-                                .interfaceName(method.getDeclaringClass().getName()) // .interfaceName(method.getDeclaringClass().getName()) 为啥这么写啊？
-                                .methodName(method.getName())
-                                .parameters(args)
-                                .paramTypes(method.getParameterTypes())
-                                .build();
-        RpcClient rpcClient = new RpcClient();
-        return ((RpcResponse)rpcClient.sendRequest(rpcRequest,host,port)).getData();
+        RpcRequest rpcRequest =  new RpcRequest(method.getDeclaringClass().getName(),method.getName(),args,method.getParameterTypes());
+        return client.sendRequest(rpcRequest);
     }
 
 

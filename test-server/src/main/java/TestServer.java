@@ -1,6 +1,6 @@
 import registry.DefaultServiceRegistry;
 import registry.ServiceRegistry;
-import service.RpcServer;
+import service.RpcSocketServer;
 
 public class TestServer {
 
@@ -9,7 +9,7 @@ public class TestServer {
         HelloService service =  new HelloServiceImpl();
         ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
         serviceRegistry.registry(service);
-        RpcServer rpcServer = new RpcServer(serviceRegistry);
+        RpcSocketServer rpcServer = new RpcSocketServer(serviceRegistry);
         rpcServer.start(9000);
 
     }
