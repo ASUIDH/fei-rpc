@@ -11,6 +11,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serializer.CommonSerializer;
 import serializer.JsonSerializer;
 
 public class NettyServer implements RpcServer {
@@ -30,7 +31,7 @@ public class NettyServer implements RpcServer {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipeline = socketChannel.pipeline();
-                    pipeline.addLast(new CommonEncoder(new JsonSerializer()));//编码
+                    pipeline.addLast(new CommonEncoder(CommonSerializer.getByCode(0)));//编码
                     pipeline.addLast(new CommonDecoder());//解码
                     pipeline.addLast(new NettyServerHandler());//处理
                 }

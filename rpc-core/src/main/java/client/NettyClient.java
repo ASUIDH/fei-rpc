@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.netty.channel.socket.SocketChannel;
+import serializer.CommonSerializer;
 import serializer.JsonSerializer;
 
 public class NettyClient implements RpcClient {
@@ -42,7 +43,7 @@ public class NettyClient implements RpcClient {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         socketChannel.pipeline()
-                                .addLast(new CommonEncoder(new JsonSerializer()))
+                                .addLast(new CommonEncoder(CommonSerializer.getByCode(0)))
                                 .addLast(new CommonDecoder())
                                 .addLast(new NettyClientHandler());
                     }

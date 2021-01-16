@@ -8,6 +8,8 @@ public interface CommonSerializer {
     {
         switch (code)
         {
+            case 0:
+                return new KryoSerializer();
             case 1:
                 return new JsonSerializer();
             default:
