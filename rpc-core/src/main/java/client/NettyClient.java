@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import io.netty.channel.socket.SocketChannel;
 import serializer.CommonSerializer;
 import serializer.JsonSerializer;
+import util.RpcMessageChecker;
 
 public class NettyClient implements RpcClient {
     private static final Logger logger = LoggerFactory.getLogger(NettyClient.class);
@@ -70,8 +71,9 @@ public class NettyClient implements RpcClient {
                 }
             });
             cF.channel().closeFuture().sync();//这个才是同步吧，我关了才去取
-            AttributeKey <RpcResponse> attributeKey =  AttributeKey.valueOf("response");
+            AttributeKey <RpcResponse> attributeKey =  AttributeKey.valueOf("response"+rpcRequest.getRequestId());
             RpcResponse response = cF.channel().attr(attributeKey).get();
+            RpcMessageChecker.check(rpcRequest, response);
             return response.getData();
         }
         catch (InterruptedException e) {

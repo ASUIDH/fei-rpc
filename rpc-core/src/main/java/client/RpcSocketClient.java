@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import serializer.CommonSerializer;
 import socket.utils.ObjectReader;
 import socket.utils.ObjectWriter;
+import util.RpcMessageChecker;
 
 import java.io.*;
 import java.net.Socket;
@@ -37,11 +38,7 @@ public class RpcSocketClient implements RpcClient {
             ObjectWriter.writeObject(outputStream, rpcRequest, serializer);
             Object obj =  ObjectReader.readObject(inputStream);
             RpcResponse response = (RpcResponse) obj;
-            if(response == null ||response.getStatesCode() == null || response.getStatesCode() != ResponseCode.SUCCESS.getCode())
-            {
-                logger.error("调用服务失败, service: {}, response:{}", rpcRequest.getInterfaceName(), response);
-                throw new RpcException(RpcError.SERVICE_INVOCATION_FAILURE);
-            }
+            RpcMessageChecker.check(rpcRequest, response);
             return response.getData();
         }
         catch (IOException e)

@@ -30,7 +30,7 @@ public class RequestHandlerThread implements  Runnable {
             String interfaceName = rpcRequest.getInterfaceName();
             Object service = serviceRegistry.getService(interfaceName);
             Object result = requestHandler.handle(rpcRequest, service);
-            ObjectWriter.writeObject(outputStream, RpcResponse.success(result), serializer);
+            ObjectWriter.writeObject(outputStream, RpcResponse.success(result,rpcRequest.getRequestId()), serializer);
             outputStream.flush();
         }
         catch (IOException | RpcException e)

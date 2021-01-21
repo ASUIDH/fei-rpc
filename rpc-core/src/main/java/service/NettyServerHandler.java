@@ -28,7 +28,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
             String interfaceName = rpcRequest.getInterfaceName();
             Object service = serviceRegistry.getService(interfaceName);
             Object obj = requestHandler.handle(rpcRequest,service);
-            ChannelFuture future = channelHandlerContext.writeAndFlush(RpcResponse.success(obj));//其实这里有问题啊，还是返回不了fail信息，后面整体该把
+            ChannelFuture future = channelHandlerContext.writeAndFlush(RpcResponse.success(obj,rpcRequest.getRequestId()));//其实这里有问题啊，还是返回不了fail信息，后面整体该把
             future.addListener(ChannelFutureListener.CLOSE);//执行完了就把future给close了，一个rpc留着链接有什么用呢？(前面为什么不用短链接)
         }
         finally {

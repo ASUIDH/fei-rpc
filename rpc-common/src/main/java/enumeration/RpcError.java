@@ -13,6 +13,7 @@ public enum RpcError {
     UNKNOWN_PACKAGE_TYPE("数据包类型错误"),
     UNKNOWN_SERIALIZER("未知序列化方式"),
     SERIALIZER_NOT_FOUND("序列化方式未初始化"),
-    SERVICE_INVOCATION_FAILURE("服务调用失败");
+    SERVICE_INVOCATION_FAILURE("服务调用失败"),
+    RESPONSE_NOT_MATCH("响应与请求号不匹配");
     private String message;
 }

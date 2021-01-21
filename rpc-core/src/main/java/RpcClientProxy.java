@@ -6,6 +6,7 @@ import entiry.RpcResponse;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.UUID;
 
 public class RpcClientProxy implements InvocationHandler {
     private final RpcClient client;
@@ -20,7 +21,7 @@ public class RpcClientProxy implements InvocationHandler {
     }
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        RpcRequest rpcRequest =  new RpcRequest(method.getDeclaringClass().getName(),method.getName(),args,method.getParameterTypes());
+        RpcRequest rpcRequest =  new RpcRequest(UUID.randomUUID().toString(),method.getDeclaringClass().getName(),method.getName(),args,method.getParameterTypes());
         return client.sendRequest(rpcRequest);
     }
 
