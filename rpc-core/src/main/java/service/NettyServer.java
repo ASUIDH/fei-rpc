@@ -3,21 +3,27 @@ package service;
 import codec.CommonDecoder;
 import codec.CommonEncoder;
 import entiry.RpcServer;
+import enumeration.RpcError;
+import exception.RpcException;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serializer.CommonSerializer;
-import serializer.JsonSerializer;
 
 public class NettyServer implements RpcServer {
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
+    private CommonSerializer serializer;
     @Override
     public void start(int port) {
+        if(serializer ==null)
+        {
+            logger.error("序列化器未初始化");
+            throw new RpcException(RpcError.UNKNOWN_SERIALIZER);
+        }
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
         ServerBootstrap bootstrap = new ServerBootstrap();
@@ -31,7 +37,7 @@ public class NettyServer implements RpcServer {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipeline = socketChannel.pipeline();
-                    pipeline.addLast(new CommonEncoder(CommonSerializer.getByCode(0)));//编码
+                    pipeline.addLast(new CommonEncoder(serializer));//编码
                     pipeline.addLast(new CommonDecoder());//解码
                     pipeline.addLast(new NettyServerHandler());//处理
                 }
@@ -56,5 +62,9 @@ public class NettyServer implements RpcServer {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+    }
+
+    public void setSerializer(CommonSerializer serializer) {
+        this.serializer = serializer;
     }
 }

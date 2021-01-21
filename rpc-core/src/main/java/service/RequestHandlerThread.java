@@ -7,11 +7,11 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import registry.ServiceRegistry;
+import serializer.CommonSerializer;
+import socket.utils.ObjectReader;
+import socket.utils.ObjectWriter;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
 @AllArgsConstructor
@@ -20,19 +20,20 @@ public class RequestHandlerThread implements  Runnable {
     private RequestHandler requestHandler;
     private ServiceRegistry serviceRegistry;
     private Socket socket;
+    private CommonSerializer serializer;
     @Override
     public void run() {
-        try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream()))
+        try(OutputStream outputStream = socket.getOutputStream();
+            InputStream inputStream = socket.getInputStream();)
         {
-            RpcRequest rpcRequest = (RpcRequest) objectInputStream.readObject();
+            RpcRequest rpcRequest = (RpcRequest) ObjectReader.readObject(inputStream);
             String interfaceName = rpcRequest.getInterfaceName();
             Object service = serviceRegistry.getService(interfaceName);
             Object result = requestHandler.handle(rpcRequest, service);
-            objectOutputStream.writeObject(RpcResponse.success(result)); //这样写耦合度太高，很难根据result，决定success还是fail，应该之前就决定成功还是失败
-            objectOutputStream.flush();
+            ObjectWriter.writeObject(outputStream, RpcResponse.success(result), serializer);
+            outputStream.flush();
         }
-        catch (IOException | ClassNotFoundException | RpcException e)
+        catch (IOException | RpcException e)
         {
             logger.error("调用发生错误",e);
         }

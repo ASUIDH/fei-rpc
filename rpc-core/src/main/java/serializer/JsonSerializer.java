@@ -2,6 +2,7 @@ package serializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entiry.RpcRequest;
+import exception.SerializeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,7 @@ public class JsonSerializer implements CommonSerializer {
         }
         catch (JsonProcessingException e) {
             logger.error("序列化发生问题",e);
-            return null;
+            throw new SerializeException("序列化发生错误");
         }
     }
 
@@ -34,7 +35,7 @@ public class JsonSerializer implements CommonSerializer {
             return obj;
         } catch (IOException e) {
             logger.error("反序列化发生问题",e);
-            return null;
+            throw new SerializeException("反序列化发生错误");
         }
     }
     private Object handleRequest(Object obj) throws IOException {

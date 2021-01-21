@@ -1,5 +1,6 @@
 import registry.DefaultServiceRegistry;
 import registry.ServiceRegistry;
+import serializer.CommonSerializer;
 import service.RpcSocketServer;
 
 public class TestServer {
@@ -10,6 +11,7 @@ public class TestServer {
         ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
         serviceRegistry.registry(service);
         RpcSocketServer rpcServer = new RpcSocketServer(serviceRegistry);
+        rpcServer.setSerializer(CommonSerializer.getByCode(2));
         rpcServer.start(9000);
 
     }

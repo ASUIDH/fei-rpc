@@ -4,6 +4,7 @@ import entiry.RpcServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import registry.ServiceRegistry;
+import serializer.CommonSerializer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -15,6 +16,7 @@ public class RpcSocketServer implements RpcServer {
     private final ExecutorService threadpool;
     private final ServiceRegistry serviceRegistry;
     private RequestHandler requestHandler;
+    private CommonSerializer serializer;
     public RpcSocketServer(ServiceRegistry serviceRegistry)
     {
         this.serviceRegistry = serviceRegistry;
@@ -34,12 +36,16 @@ public class RpcSocketServer implements RpcServer {
             while((socket = serverSocket.accept())!=null)
             {
                 logger.info("客户端连接，ip为{}",socket.getInetAddress());
-                threadpool.execute(new RequestHandlerThread(requestHandler,serviceRegistry,socket));
+                threadpool.execute(new RequestHandlerThread(requestHandler,serviceRegistry,socket,serializer));
             }
         }
         catch (IOException e)
         {
             logger.error("服务端启动出现问题", e);
         }
+    }
+
+    public void setSerializer(CommonSerializer serializer) {
+        this.serializer = serializer;
     }
 }
