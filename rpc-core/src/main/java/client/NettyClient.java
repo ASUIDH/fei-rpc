@@ -23,6 +23,9 @@ import serializer.CommonSerializer;
 import serializer.JsonSerializer;
 import util.RpcMessageChecker;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
 public class NettyClient implements RpcClient {
     private static final Logger logger = LoggerFactory.getLogger(NettyClient.class);
     private int port;
@@ -57,24 +60,30 @@ public class NettyClient implements RpcClient {
             }
         });
         try {
-            ChannelFuture cF = bootstrap.connect(host, port).sync();
+            Channel channel = ChannelProvider.get(new InetSocketAddress(host,port),CommonSerializer.getByCode(1));
             Object ans = null;
-            cF.channel().writeAndFlush(rpcRequest).addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                    if(channelFuture.isSuccess()) {
-                        logger.info("客户端发送消息恒功 :"+rpcRequest.toString());
+            if(channel!=null && channel.isActive()) {
+                channel.writeAndFlush(rpcRequest).addListener(new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                        if (channelFuture.isSuccess()) {
+                            logger.info("客户端发送消息恒功 :" + rpcRequest.toString());
+                        } else {
+                            logger.error("客户端发送消息失败");
+                        }
                     }
-                    else {
-                        logger.error("客户端发送消息失败");
-                    }
-                }
-            });
-            cF.channel().closeFuture().sync();//这个才是同步吧，我关了才去取
-            AttributeKey <RpcResponse> attributeKey =  AttributeKey.valueOf("response"+rpcRequest.getRequestId());
-            RpcResponse response = cF.channel().attr(attributeKey).get();
-            RpcMessageChecker.check(rpcRequest, response);
-            return response.getData();
+                });
+                channel.closeFuture().sync();//这个才是同步吧，我关了才去取
+                AttributeKey<RpcResponse> attributeKey = AttributeKey.valueOf("response" + rpcRequest.getRequestId());
+                RpcResponse response = channel.attr(attributeKey).get();
+                RpcMessageChecker.check(rpcRequest, response);
+                return response.getData();
+            }
+            else{
+                logger.error("连接建立失败");
+                System.exit(0);
+                return null; //加上这个才能通过编译
+            }
         }
         catch (InterruptedException e) {
             logger.error("建立连接发生错误");
