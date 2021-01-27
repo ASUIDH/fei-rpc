@@ -1,13 +1,12 @@
-package registry;
+package Provider;
 
 import enumeration.RpcError;
 import exception.RpcException;
 
-import java.lang.reflect.AnnotatedType;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultServiceRegistry implements ServiceRegistry {
+public class DefaultServiceProvider implements ServiceProvider {
     private static Map<String,Object> serviceMap = new ConcurrentHashMap<>();
     private static Set<String> registryService = ConcurrentHashMap.newKeySet();
     @Override

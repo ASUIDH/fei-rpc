@@ -1,5 +1,7 @@
 package client;
 
+import Registry.DefaultServiceRegistry;
+import Registry.ServiceRegistry;
 import codec.CommonDecoder;
 import codec.CommonEncoder;
 import entiry.RpcClient;
@@ -32,10 +34,12 @@ public class NettyClient implements RpcClient {
     private String host;
     private static Bootstrap bootstrap;
     private CommonSerializer serializer;
+    private ServiceRegistry registry;
     public NettyClient(String host,int port)
     {
         this.host = host;
         this.port = port;
+        registry = new DefaultServiceRegistry(host+":"+port);
     }
     static {
         bootstrap = new Bootstrap();
@@ -60,7 +64,8 @@ public class NettyClient implements RpcClient {
             }
         });
         try {
-            Channel channel = ChannelProvider.get(new InetSocketAddress(host,port),CommonSerializer.getByCode(1));
+            InetSocketAddress inetSocketAddress = registry.lookupService(rpcRequest.getInterfaceName());
+            Channel channel = ChannelProvider.get(inetSocketAddress,CommonSerializer.getByCode(1));
             Object ans = null;
             if(channel!=null && channel.isActive()) {
                 channel.writeAndFlush(rpcRequest).addListener(new ChannelFutureListener() {

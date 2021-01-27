@@ -15,6 +15,9 @@ public enum RpcError {
     SERIALIZER_NOT_FOUND("序列化方式未初始化"),
     SERVICE_INVOCATION_FAILURE("服务调用失败"),
     RESPONSE_NOT_MATCH("响应与请求号不匹配"),
-    CLIENT_CONNECT_SERVER_FAILURE("客户端连接服务端失败");
+    CLIENT_CONNECT_SERVER_FAILURE("客户端连接服务端失败"),
+    NACOS_CONNCT_FAILURE("nacos服务器连接失败"),
+    NACOS_REGISTRY_FAILURE("nacos服务注册失败"),
+    NACOS_SERVICE_FIND_FAILURE("服务发现失败");
     private String message;
 }

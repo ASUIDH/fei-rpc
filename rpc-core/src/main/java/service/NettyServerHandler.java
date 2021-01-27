@@ -2,7 +2,6 @@ package service;
 
 import entiry.RpcRequest;
 import entiry.RpcResponse;
-import entiry.RpcServer;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,15 +9,15 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import registry.DefaultServiceRegistry;
-import registry.ServiceRegistry;
+import Provider.DefaultServiceProvider;
+import Provider.ServiceProvider;
 
 public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
     private final static Logger logger = LoggerFactory.getLogger(NettyServerHandler.class);
     private static RequestHandler requestHandler;
-    private static ServiceRegistry serviceRegistry;
+    private static ServiceProvider serviceProvider;
     static {
-        serviceRegistry = new DefaultServiceRegistry();
+        serviceProvider = new DefaultServiceProvider();
         requestHandler = new RequestHandler();
     }
 
@@ -26,7 +25,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcRequest rpcRequest) throws Exception {
         try {
             String interfaceName = rpcRequest.getInterfaceName();
-            Object service = serviceRegistry.getService(interfaceName);
+            Object service = serviceProvider.getService(interfaceName);
             Object obj = requestHandler.handle(rpcRequest,service);
             ChannelFuture future = channelHandlerContext.writeAndFlush(RpcResponse.success(obj,rpcRequest.getRequestId()));//其实这里有问题啊，还是返回不了fail信息，后面整体该把
             future.addListener(ChannelFutureListener.CLOSE);//执行完了就把future给close了，一个rpc留着链接有什么用呢？(前面为什么不用短链接)

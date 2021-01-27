@@ -1,5 +1,9 @@
 package service;
 
+import Provider.DefaultServiceProvider;
+import Provider.ServiceProvider;
+import Registry.DefaultServiceRegistry;
+import Registry.ServiceRegistry;
 import codec.CommonDecoder;
 import codec.CommonEncoder;
 import entiry.RpcServer;
@@ -17,8 +21,23 @@ import serializer.CommonSerializer;
 public class NettyServer implements RpcServer {
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
     private CommonSerializer serializer;
+    private ServiceRegistry registry;
+    private ServiceProvider provider;
+    private int port;
+    public NettyServer(String nacosServerAddr,int port)
+    {
+        this.port = port;
+        registry = new DefaultServiceRegistry(nacosServerAddr);
+        provider = new DefaultServiceProvider();
+    }
+    public <T>  void registry(Object service, Class<T> serviceClass)
+    {
+        String name = serviceClass.getName();
+        provider.registry(service);
+        registry.registry(name, "127.0.0.1", this.port);
+    }
     @Override
-    public void start(int port) {
+    public void start() {
         if(serializer ==null)
         {
             logger.error("序列化器未初始化");

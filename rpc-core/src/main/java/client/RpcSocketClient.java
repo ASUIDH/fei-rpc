@@ -1,5 +1,7 @@
 package client;
 
+import Registry.DefaultServiceRegistry;
+import Registry.ServiceRegistry;
 import entiry.RpcClient;
 import entiry.RpcRequest;
 import entiry.RpcResponse;
@@ -14,24 +16,30 @@ import socket.utils.ObjectWriter;
 import util.RpcMessageChecker;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class RpcSocketClient implements RpcClient {
     private static final Logger logger = LoggerFactory.getLogger(RpcSocketClient.class);
     private String host ;
     private int port;
+    private ServiceRegistry registry;
+
     private CommonSerializer serializer;
     public RpcSocketClient(String host ,int port)
     {
         this.host =host;
         this.port=port;
+        registry = new DefaultServiceRegistry(host+":"+port);
+
     }
     public Object sendRequest(RpcRequest rpcRequest) {
         if(serializer == null) {
             logger.error("未初始化序列化方式");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        try(Socket socket = new Socket(host, port);
+        InetSocketAddress inetSocketAddress =registry.lookupService(rpcRequest.getInterfaceName());
+        try(Socket socket = new Socket(inetSocketAddress.getHostName(),inetSocketAddress.getPort());
             OutputStream outputStream = socket.getOutputStream();
             InputStream inputStream = socket.getInputStream();)
         {

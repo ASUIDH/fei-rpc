@@ -6,7 +6,7 @@ import exception.RpcException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import registry.ServiceRegistry;
+import Provider.ServiceProvider;
 import serializer.CommonSerializer;
 import socket.utils.ObjectReader;
 import socket.utils.ObjectWriter;
@@ -18,7 +18,7 @@ import java.net.Socket;
 public class RequestHandlerThread implements  Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandlerThread.class);
     private RequestHandler requestHandler;
-    private ServiceRegistry serviceRegistry;
+    private ServiceProvider serviceProvider;
     private Socket socket;
     private CommonSerializer serializer;
     @Override
@@ -28,7 +28,7 @@ public class RequestHandlerThread implements  Runnable {
         {
             RpcRequest rpcRequest = (RpcRequest) ObjectReader.readObject(inputStream);
             String interfaceName = rpcRequest.getInterfaceName();
-            Object service = serviceRegistry.getService(interfaceName);
+            Object service = serviceProvider.getService(interfaceName);
             Object result = requestHandler.handle(rpcRequest, service);
             ObjectWriter.writeObject(outputStream, RpcResponse.success(result,rpcRequest.getRequestId()), serializer);
             outputStream.flush();

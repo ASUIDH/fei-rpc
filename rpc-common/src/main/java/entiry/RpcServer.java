@@ -1,5 +1,6 @@
 package entiry;
 
 public interface RpcServer {
-    public void start(int port);
+    public <T> void registry(Object service, Class<T> serviceClass);
+    public void start();
 }

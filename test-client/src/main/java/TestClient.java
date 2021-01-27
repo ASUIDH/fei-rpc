@@ -7,7 +7,7 @@ import serializer.CommonSerializer;
 public class TestClient {
     private static final Logger logger = LoggerFactory.getLogger(TestClient.class);
     public static void main(String[] args) {
-        RpcSocketClient rpcSocketClient = new RpcSocketClient("127.0.0.1", 9000);
+        RpcSocketClient rpcSocketClient = new RpcSocketClient("127.0.0.1", 8848);
         rpcSocketClient.setSerializer(CommonSerializer.getByCode(1));
         RpcClientProxy rpcClientProxy = new RpcClientProxy(rpcSocketClient);
         HelloService helloServiceProx =rpcClientProxy.getProxy(HelloService.class);
