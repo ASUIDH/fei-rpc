@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import registry.ServiceRegistry;
 import serializer.CommonSerializer;
+import util.ThreadPoolFactory;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -20,12 +21,7 @@ public class RpcSocketServer implements RpcServer {
     public RpcSocketServer(ServiceRegistry serviceRegistry)
     {
         this.serviceRegistry = serviceRegistry;
-        int corePoolSize = 3;
-        int maximumPoolSize = 30;
-        int keepAlive = 60;
-        BlockingQueue<Runnable> bq = new ArrayBlockingQueue<>(100);
-        ThreadFactory threadFactory = Executors.defaultThreadFactory();
-        this.threadpool = new ThreadPoolExecutor(corePoolSize,maximumPoolSize,keepAlive,TimeUnit.SECONDS,bq,threadFactory);
+        this.threadpool = ThreadPoolFactory.createThreadPool("socket-rpc-server");
         requestHandler = new RequestHandler();
     }
     public void start(int port)

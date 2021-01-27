@@ -12,10 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serializer.CommonSerializer;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Date;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
