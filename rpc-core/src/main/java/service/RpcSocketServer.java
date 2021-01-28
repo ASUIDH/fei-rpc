@@ -5,6 +5,7 @@ import Registry.DefaultServiceRegistry;
 import Registry.ServiceRegistry;
 import entiry.RpcServer;
 import factory.SingletonFactory;
+import hook.ShutdownHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import Provider.ServiceProvider;
@@ -45,6 +46,7 @@ public class RpcSocketServer implements RpcServer {
         try (ServerSocket serverSocket = new ServerSocket(port);){
             logger.info("服务启动");
             Socket socket;
+            ShutdownHook.getShutdownHook().addCleanAllHook();
             while((socket = serverSocket.accept())!=null)
             {
                 logger.info("客户端连接，ip为{}",socket.getInetAddress());

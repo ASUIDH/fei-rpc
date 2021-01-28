@@ -9,6 +9,7 @@ import codec.CommonEncoder;
 import entiry.RpcServer;
 import enumeration.RpcError;
 import exception.RpcException;
+import hook.ShutdownHook;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -62,6 +63,7 @@ public class NettyServer implements RpcServer {
                 }
             });
             ChannelFuture future = bootstrap.bind(port).sync();
+            ShutdownHook.getShutdownHook().addCleanAllHook();
             future.addListener(new ChannelFutureListener(){
 
                 @Override
