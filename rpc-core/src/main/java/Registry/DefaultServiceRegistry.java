@@ -33,19 +33,4 @@ public class DefaultServiceRegistry implements ServiceRegistry{
             throw new RpcException(RpcError.NACOS_REGISTRY_FAILURE);
         }
     }
-
-    @Override
-    public InetSocketAddress lookupService(String serviceName) {
-        try {
-            List<Instance> instances = naming.getAllInstances(serviceName);
-            Instance instance = instances.get(0);
-            InetSocketAddress inetSocketAddress = new InetSocketAddress(instance.getIp(), instance.getPort());
-            logger.info("找到服务 : {} 地址为 : {} 的实例",serviceName,inetSocketAddress);
-            return inetSocketAddress;
-        }
-        catch (NacosException e) {
-            logger.error("服务发现失败", e);
-            throw new RpcException(RpcError.NACOS_SERVICE_FIND_FAILURE);
-        }
-    }
 }

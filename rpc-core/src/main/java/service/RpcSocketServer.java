@@ -4,11 +4,12 @@ import Provider.DefaultServiceProvider;
 import Registry.DefaultServiceRegistry;
 import Registry.ServiceRegistry;
 import entiry.RpcServer;
+import factory.SingletonFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import Provider.ServiceProvider;
 import serializer.CommonSerializer;
-import util.ThreadPoolFactory;
+import factory.ThreadPoolFactory;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -29,7 +30,7 @@ public class RpcSocketServer implements RpcServer {
         this.registry = new DefaultServiceRegistry(nacosServerAddr);
         this.port = port;
         this.threadpool = ThreadPoolFactory.createThreadPool("socket-rpc-server");
-        requestHandler = new RequestHandler();
+        requestHandler = SingletonFactory.getInstance(RequestHandler.class);
     }
 
     @Override

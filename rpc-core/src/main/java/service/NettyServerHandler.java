@@ -2,6 +2,7 @@ package service;
 
 import entiry.RpcRequest;
 import entiry.RpcResponse;
+import factory.SingletonFactory;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,12 +19,15 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
     private static ServiceProvider serviceProvider;
     static {
         serviceProvider = new DefaultServiceProvider();
-        requestHandler = new RequestHandler();
+    }
+    public NettyServerHandler(){
+        this.requestHandler = SingletonFactory.getInstance(RequestHandler.class);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcRequest rpcRequest) throws Exception {
         try {
+            //这里不想用线程池,netty本来就多线程来处理事件,再启动更多的线程是否有意义,这里应当更多了解netty线程模型再作结论?
             String interfaceName = rpcRequest.getInterfaceName();
             Object service = serviceProvider.getService(interfaceName);
             Object obj = requestHandler.handle(rpcRequest,service);

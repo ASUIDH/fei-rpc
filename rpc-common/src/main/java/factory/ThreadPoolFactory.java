@@ -1,4 +1,4 @@
-package util;
+package factory;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
@@ -9,6 +9,7 @@ public class ThreadPoolFactory {
     private static final int MAX_POOL_SIZE = 20;
     private static final int KEEP_ALIVE_TIME = 30;
     private static final int BLOCKING_QUEUE_CAPACITY = 100;
+    private ThreadPoolFactory(){}
     public static ExecutorService createThreadPool(String threadNamePrefix)
     {
         return  createThreadPool(threadNamePrefix, false);

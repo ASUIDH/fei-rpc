@@ -1,6 +1,8 @@
 package client;
 
 import Registry.DefaultServiceRegistry;
+import Registry.NacosServiceDiscovery;
+import Registry.ServiceDiscovery;
 import Registry.ServiceRegistry;
 import codec.CommonDecoder;
 import codec.CommonEncoder;
@@ -34,12 +36,12 @@ public class NettyClient implements RpcClient {
     private String host;
     private static Bootstrap bootstrap;
     private CommonSerializer serializer;
-    private ServiceRegistry registry;
+    private ServiceDiscovery discovery;
     public NettyClient(String host,int port)
     {
         this.host = host;
         this.port = port;
-        registry = new DefaultServiceRegistry(host+":"+port);
+        discovery = new NacosServiceDiscovery(host+":"+port);
     }
     static {
         bootstrap = new Bootstrap();
@@ -64,7 +66,7 @@ public class NettyClient implements RpcClient {
             }
         });
         try {
-            InetSocketAddress inetSocketAddress = registry.lookupService(rpcRequest.getInterfaceName());
+            InetSocketAddress inetSocketAddress = discovery.lookupService(rpcRequest.getInterfaceName());
             Channel channel = ChannelProvider.get(inetSocketAddress,CommonSerializer.getByCode(1));
             Object ans = null;
             if(channel!=null && channel.isActive()) {

@@ -1,6 +1,8 @@
 package client;
 
 import Registry.DefaultServiceRegistry;
+import Registry.NacosServiceDiscovery;
+import Registry.ServiceDiscovery;
 import Registry.ServiceRegistry;
 import entiry.RpcClient;
 import entiry.RpcRequest;
@@ -23,14 +25,14 @@ public class RpcSocketClient implements RpcClient {
     private static final Logger logger = LoggerFactory.getLogger(RpcSocketClient.class);
     private String host ;
     private int port;
-    private ServiceRegistry registry;
+    private ServiceDiscovery discovery;
 
     private CommonSerializer serializer;
     public RpcSocketClient(String host ,int port)
     {
         this.host =host;
         this.port=port;
-        registry = new DefaultServiceRegistry(host+":"+port);
+        discovery= new NacosServiceDiscovery(host+":"+port);
 
     }
     public Object sendRequest(RpcRequest rpcRequest) {
@@ -38,7 +40,7 @@ public class RpcSocketClient implements RpcClient {
             logger.error("未初始化序列化方式");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        InetSocketAddress inetSocketAddress =registry.lookupService(rpcRequest.getInterfaceName());
+        InetSocketAddress inetSocketAddress =discovery.lookupService(rpcRequest.getInterfaceName());
         try(Socket socket = new Socket(inetSocketAddress.getHostName(),inetSocketAddress.getPort());
             OutputStream outputStream = socket.getOutputStream();
             InputStream inputStream = socket.getInputStream();)
