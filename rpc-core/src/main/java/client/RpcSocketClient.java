@@ -32,7 +32,7 @@ public class RpcSocketClient implements RpcClient {
     {
         this.host =host;
         this.port=port;
-        discovery= new NacosServiceDiscovery(host+":"+port);
+        discovery= new NacosServiceDiscovery(host+":"+port,0);
 
     }
     public Object sendRequest(RpcRequest rpcRequest) {

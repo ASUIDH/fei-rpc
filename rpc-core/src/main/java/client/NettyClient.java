@@ -37,11 +37,11 @@ public class NettyClient implements RpcClient {
     private static Bootstrap bootstrap;
     private CommonSerializer serializer;
     private ServiceDiscovery discovery;
-    public NettyClient(String host,int port)
+    public NettyClient(String host,int port,int balancerCode)
     {
         this.host = host;
         this.port = port;
-        discovery = new NacosServiceDiscovery(host+":"+port);
+        discovery = new NacosServiceDiscovery(host+":"+port,balancerCode);
     }
     static {
         bootstrap = new Bootstrap();

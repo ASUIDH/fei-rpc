@@ -11,7 +11,9 @@ public class TestClient {
         rpcSocketClient.setSerializer(CommonSerializer.getByCode(1));
         RpcClientProxy rpcClientProxy = new RpcClientProxy(rpcSocketClient);
         HelloService helloServiceProx =rpcClientProxy.getProxy(HelloService.class);
-        String ans = helloServiceProx.hello(new HelloObject(1, "啦啦啦"));
-        logger.info(ans);
+        for(int i = 0 ; i< 9;i++) {
+            String ans = helloServiceProx.hello(new HelloObject(1, "啦啦啦"));
+            logger.info(ans);
+        }
     }
 }
