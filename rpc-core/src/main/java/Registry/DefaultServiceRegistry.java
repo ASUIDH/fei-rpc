@@ -57,6 +57,11 @@ public class DefaultServiceRegistry implements ServiceRegistry{
                 }
             }
     }
+    public static void cleanAllRegistry(){
+        DefaultServiceRegistry.getServiceRegistries().parallelStream().forEach(serviceRegistry -> {
+            serviceRegistry.cleanRegistry();
+        });
+    }
 
     public static List<ServiceRegistry> getServiceRegistries() {
         return serviceRegistries;

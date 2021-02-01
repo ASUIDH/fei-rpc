@@ -2,6 +2,7 @@ package hook;
 
 import Registry.DefaultServiceRegistry;
 import Registry.ServiceRegistry;
+import factory.ThreadPoolFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +16,8 @@ public class ShutdownHook {
     public void addCleanAllHook(){
         logger.info("关闭后将自动注销所有服务");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for(ServiceRegistry registry : DefaultServiceRegistry.getServiceRegistries())
-            {
-                registry.cleanRegistry();
-            }
+            DefaultServiceRegistry.cleanAllRegistry();
+            ThreadPoolFactory.shutdownAll();
         }));
     }
 }
