@@ -1,4 +1,4 @@
-package service;
+package server;
 
 import Provider.DefaultServiceProvider;
 import Provider.ServiceProvider;
@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serializer.CommonSerializer;
 
-public class NettyServer implements RpcServer {
+public class NettyServer extends AbstractRpcServer {
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
     private CommonSerializer serializer;
     private ServiceRegistry registry;
@@ -31,14 +31,14 @@ public class NettyServer implements RpcServer {
         registry = new DefaultServiceRegistry(nacosServerAddr);
         provider = new DefaultServiceProvider();
     }
-    public <T>  void registry(Object service, Class<T> serviceClass)
+    public <T>  void registry(Object service, String serviceName)
     {
-        String name = serviceClass.getName();
-        provider.registry(service);
-        registry.registry(name, "127.0.0.1", this.port);
+        provider.registry(service);//这里会调用多次,后续考虑改进
+        registry.registry(serviceName, "127.0.0.1", this.port);
     }
     @Override
     public void start() {
+        scanServices();
         if(serializer ==null)
         {
             logger.error("序列化器未初始化");

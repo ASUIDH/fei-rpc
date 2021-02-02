@@ -18,6 +18,8 @@ public enum RpcError {
     CLIENT_CONNECT_SERVER_FAILURE("客户端连接服务端失败"),
     NACOS_CONNCT_FAILURE("nacos服务器连接失败"),
     NACOS_REGISTRY_FAILURE("nacos服务注册失败"),
+    UNKNOW_ERROR("未知错误"),
+    SERVICE_SCAN_NOT_FOUND("启动类ServiceScan注解缺失"),
     NACOS_SERVICE_FIND_FAILURE("服务发现失败");
     private String message;
 }

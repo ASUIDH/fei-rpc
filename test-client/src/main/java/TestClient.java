@@ -15,5 +15,7 @@ public class TestClient {
             String ans = helloServiceProx.hello(new HelloObject(1, "啦啦啦"));
             logger.info(ans);
         }
+        ByeService byeServiceProx =rpcClientProxy.getProxy(ByeService.class);
+        byeServiceProx.bye("再见");
     }
 }

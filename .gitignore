@@ -5,6 +5,7 @@
 *.jar
 *.war
 target/
+**/test/
 
 .idea/
 *.iml

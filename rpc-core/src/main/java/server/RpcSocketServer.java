@@ -1,4 +1,4 @@
-package service;
+package server;
 
 import Provider.DefaultServiceProvider;
 import Registry.DefaultServiceRegistry;
@@ -17,7 +17,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.*;
 
-public class RpcSocketServer implements RpcServer {
+public class RpcSocketServer extends AbstractRpcServer {
     private static final Logger logger = LoggerFactory.getLogger(RpcSocketServer.class);
     private final ExecutorService threadpool;
     private final ServiceProvider serviceProvider;
@@ -35,14 +35,14 @@ public class RpcSocketServer implements RpcServer {
     }
 
     @Override
-    public <T> void registry(Object service, Class<T> serviceClass) {
-        String name = serviceClass.getName();
-        registry.registry(name,"127.0.0.1",port);
-        serviceProvider.registry(service);
+    public <T> void registry(Object service, String serviceName) {
+        registry.registry(serviceName,"127.0.0.1",port);
+        serviceProvider.registry(service); //这里会调用多次,后续考虑改进
     }
 
     public void start()
     {
+        scanServices();
         try (ServerSocket serverSocket = new ServerSocket(port);){
             logger.info("服务启动");
             Socket socket;
